@@ -46,7 +46,7 @@ public class LoginController {
             }
 
             httpSession.setAttribute("user", user);     // user 테이블에 현재 만들어진 User추가
-            //개발자도구 Application에서 JSESSIONID를 확인할 수 있음
+            //개발자도구 Application-cookie에서 JSESSIONID를 확인할 수 있음
             
             return "redirect:/todos";
         } catch (Exception e) {
