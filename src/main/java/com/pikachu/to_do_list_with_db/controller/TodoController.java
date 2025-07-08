@@ -10,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/todos")
@@ -26,13 +25,16 @@ public class TodoController {
     }
 
     @GetMapping
-    public String list(HttpSession httpSession) {
+    public String list(HttpSession httpSession, Model model) {
         //System.out.println(getCurrentUser(httpSession));
         User user = getCurrentUser(httpSession);
 
         if (user == null) {   // 세션이 안맞는 경우
             return "redirect:/login";
         }
+
+        List<Todo> list = todoRepository.findAllByUserId(user.getId());
+        model.addAttribute("todos", list);
 
         return "todo-list";
     }
@@ -62,6 +64,17 @@ public class TodoController {
                 .completed(todoDto.isCompleted())
                 .build();
         todoRepository.save(todo);
+
+        return "redirect:/todos";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(
+            @PathVariable int id,
+            HttpSession httpSession
+    ) {
+        User user = getCurrentUser(httpSession);
+        todoRepository.deleteByIdAndUserId(id, user.getId());
 
         return "redirect:/todos";
     }

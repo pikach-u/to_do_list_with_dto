@@ -34,4 +34,10 @@ public class TodoRepository {
         String sql = "INSERT INTO todo (user_id, title, completed) VALUES (?, ?, ?)";
         return jdbcTemplate.update(sql, todo.getUserId(), todo.getTitle(), todo.isCompleted());
     }
+
+    public int deleteByIdAndUserId(int id, int userId) {
+        String sql = "DELETE FROM todo WHERE id = ? AND user_id = ?";   //id와 user_id 둘다 체크
+
+        return jdbcTemplate.update(sql, id, userId);
+    }
 }
