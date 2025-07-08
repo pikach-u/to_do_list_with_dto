@@ -18,29 +18,30 @@ public class SignupController {
     private final UserRepository userRepository;
 
     @GetMapping("/signup")
-    public String showSignup(Model model){
+    public String showSignup(Model model) {
         model.addAttribute("signupDto", new SignupDTO());
 
         return "signup";
     }
 
     @PostMapping("/signup")
-    public String doiSignup(    // 회원가입 시 데이터 검증을 위한 어노테이션
-            @Valid @ModelAttribute SignupDTO signupDTO,
+    public String doSignup(
+            @Valid @ModelAttribute("signupDto") SignupDTO signupDTO,
             BindingResult bindingResult,
             Model model
-    ){
-        if(bindingResult.hasErrors()){
+    ) {
+        if (bindingResult.hasErrors()) {
             return "signup";
         }
+
         // 중복 가입 여부 체크
 
         User user = User.builder()
                 .username(signupDTO.getUsername())
                 .password(signupDTO.getPassword())
                 .build();
+        userRepository.save(user);
 
-        return "redirect:/login?resistered"; // http://localhost:8080/login?registered=true
+        return "redirect:/login?registered";
     }
-
 }
